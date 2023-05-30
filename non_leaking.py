@@ -358,7 +358,7 @@ class GridSampleBackward(autograd.Function):
     @staticmethod
     def forward(ctx, grad_output, input, grid):
         op = torch._C._jit_get_operation("aten::grid_sampler_2d_backward")
-        grad_input, grad_grid = op(grad_output, input, grid, 0, 0, False)
+        grad_input, grad_grid = op[0](grad_output, input, grid, 0, 0, False, [True, True])
         ctx.save_for_backward(grid)
 
         return grad_input, grad_grid
@@ -372,6 +372,9 @@ class GridSampleBackward(autograd.Function):
             grad_grad_output = GridSampleForward.apply(grad_grad_input, grid)
 
         return grad_grad_output, None, None
+
+
+
 
 
 grid_sample = GridSampleForward.apply
