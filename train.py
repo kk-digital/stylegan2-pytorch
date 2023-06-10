@@ -306,6 +306,8 @@ def train(args, loader, generator, discriminator, g_optim, d_optim, g_ema, devic
                 with torch.no_grad():
                     g_ema.eval()
                     sample, _ = g_ema([sample_z])
+                    # Create the 'sample' directory if it doesn't exist
+                    os.makedirs("sample", exist_ok=True)
                     utils.save_image(
                         sample,
                         f"sample/{str(i).zfill(6)}.png",
@@ -315,6 +317,7 @@ def train(args, loader, generator, discriminator, g_optim, d_optim, g_ema, devic
                     )
 
             if i % 10000 == 0:
+                os.makedirs("checkpoint", exist_ok=True)
                 torch.save(
                     {
                         "g": g_module.state_dict(),
@@ -327,6 +330,8 @@ def train(args, loader, generator, discriminator, g_optim, d_optim, g_ema, devic
                     },
                     f"checkpoint/{str(i).zfill(6)}.pt",
                 )
+
+
 
 
 if __name__ == "__main__":
@@ -427,6 +432,9 @@ if __name__ == "__main__":
         default=256,
         help="probability update interval of the adaptive augmentation",
     )
+    parser.add_argument("--sample_dir", type=str, default="sample", help="directory to save generated samples"),
+
+    parser.add_argument("--checkpoint_dir", type=str, default="checkpoint", help="directory to save checkpoints")
 
     args = parser.parse_args()
 
