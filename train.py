@@ -307,17 +307,17 @@ def train(args, loader, generator, discriminator, g_optim, d_optim, g_ema, devic
                     g_ema.eval()
                     sample, _ = g_ema([sample_z])
                     # Create the 'sample' directory if it doesn't exist
-                    os.makedirs("sample", exist_ok=True)
+                    os.makedirs(args.sample_dir, exist_ok=True)
                     utils.save_image(
                         sample,
-                        f"sample/{str(i).zfill(6)}.png",
+                        f"{args.sample_dir}/{str(i).zfill(6)}.png",
                         nrow=int(args.n_sample ** 0.5),
                         normalize=True,
                         range=(-1, 1),
                     )
 
             if i % 10000 == 0:
-                os.makedirs("checkpoint", exist_ok=True)
+                os.makedirs(args.checkpoint_dir, exist_ok=True)
                 torch.save(
                     {
                         "g": g_module.state_dict(),
@@ -328,8 +328,9 @@ def train(args, loader, generator, discriminator, g_optim, d_optim, g_ema, devic
                         "args": args,
                         "ada_aug_p": ada_aug_p,
                     },
-                    f"checkpoint/{str(i).zfill(6)}.pt",
+                    f"{args.checkpoint_dir}/{str(i).zfill(6)}.pt",
                 )
+
 
 
 
